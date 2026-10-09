@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Learn pstack</title>
+<meta name="description" content="How to use pstack, the Cursor plugin for rigorous agent workflows. Setup, prompts, and every skill, playbook, and principle.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1c1c1e;--mu:#5f6368;--card:#fff;--ln:#e4e0d6;--ac:#a87a00;--acbg:#f6e7b0;--code:#f2efe6}
+:root[data-theme=dark]{--bg:#111;--fg:#ececec;--mu:#a3a3a3;--card:#1b1b1d;--ln:#2d2d30;--ac:#f0c040;--acbg:#3a3010;--code:#242427}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#111;--fg:#ececec;--mu:#a3a3a3;--card:#1b1b1d;--ln:#2d2d30;--ac:#f0c040;--acbg:#3a3010;--code:#242427}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg)}
+a{color:var(--ac)}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+code{background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);border:1px solid var(--ln);border-radius:8px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;margin:6px 0}
+pre code{background:none;padding:0}
+button{font:inherit;cursor:pointer;color:inherit}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--ln)}
+.bar div{max-width:1080px;margin:auto;display:flex;gap:16px;align-items:center;padding:10px 18px}
+.bar b{margin-right:auto}.bar b span{color:var(--ac)}
+.bar a{color:var(--mu);text-decoration:none;font-size:14px}.bar a:hover{color:var(--fg)}
+#theme{background:none;border:1px solid var(--ln);border-radius:6px;padding:2px 9px}
+main{max-width:1080px;margin:auto;padding:0 18px 60px}
+section{padding:40px 0 10px}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.1;margin:28px 0 10px;letter-spacing:-.02em}
+h2{font-size:26px;margin:0 0 4px}
+.lead{color:var(--mu);font-size:18px;max-width:720px;margin:0 0 22px}
+.start{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.step{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px 16px}
+.step .n{font-weight:800;color:var(--ac);font-size:13px;letter-spacing:.06em}
+.step p{margin:4px 0 0;font-size:14.5px;color:var(--mu)}
+.cmd{display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--ln);border-radius:8px;padding:8px 10px;margin:8px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:13.5px}
+.cmd span{flex:1;word-break:break-word}
+.cp{background:var(--card);border:1px solid var(--ln);border-radius:5px;font-size:11.5px;padding:1px 7px;font-family:system-ui,sans-serif}
+.note{color:var(--mu);font-size:14.5px;margin-top:14px}
+ul.tight{padding-left:20px}ul.tight li{margin:4px 0}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 6px}
+#q{flex:1;min-width:200px;padding:9px 12px;border-radius:8px;border:1px solid var(--ln);background:var(--card);color:var(--fg);font-size:15px}
+.chip{background:var(--card);border:1px solid var(--ln);border-radius:999px;padding:3px 11px;font-size:13px}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#111;font-weight:700}
+#groups{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+#count{color:var(--mu);font-size:13.5px}
+#cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;margin-top:10px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px 16px;min-width:0}
+.card.open{grid-column:1/-1}
+.card.flash{outline:2px solid var(--ac)}
+.meta{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu)}
+.card h3{margin:2px 0 4px;font-size:16.5px;font-family:ui-monospace,Menlo,monospace;color:var(--ac);word-break:break-word}
+.card h3.pl{font-family:inherit}
+.card p{margin:4px 0;font-size:14.5px}
+.when{color:var(--mu)}
+.lbl{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin-top:8px}
+.more{margin-top:8px;background:none;border:0;color:var(--ac);padding:0;font-size:14px}
+.body{border-top:1px solid var(--ln);margin-top:10px;padding-top:6px;font-size:14.5px}
+.body h3,.body h4,.body h5,.body h6{font-family:inherit;color:var(--fg);margin:14px 0 4px;font-size:15px}
+.body li{margin:3px 0}
+.tw{overflow-x:auto}table{border-collapse:collapse;font-size:13.5px}th,td{border:1px solid var(--ln);padding:5px 8px;text-align:left;vertical-align:top}
+.ex{display:grid;gap:10px}
+.ex .lab{font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.quiz .qq{margin:14px 0}
+.quiz label{display:block;border:1px solid var(--ln);background:var(--card);border-radius:8px;padding:6px 10px;margin:5px 0;cursor:pointer}
+.quiz label.ok{border-color:#2e9d4f;background:color-mix(in srgb,#2e9d4f 14%,var(--card))}
+.quiz label.no{border-color:#cf4436;background:color-mix(in srgb,#cf4436 14%,var(--card))}
+.quiz .why{display:none;color:var(--mu);font-size:14px}.quiz .done .why{display:block}
+footer{max-width:1080px;margin:auto;padding:20px 18px 40px;color:var(--mu);font-size:13px}
+@media (max-width:640px){.bar a.hide{display:none}#cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="bar"><div><b>learn <span>pstack</span></b><a class="hide" href="#start">Start</a><a class="hide" href="#prompts">Prompts</a><a href="#catalog">Catalog</a><a class="hide" href="#examples">Examples</a><a class="hide" href="#quiz">Quiz</a><button id="theme" aria-label="Toggle dark mode">◐</button></div></nav>
+<main>
+<section id="start" style="padding-top:0">
+<h1>If you want to go fast, go deep first.</h1>
+<p class="lead">pstack is a Cursor plugin by poteto. It makes agents work like a careful engineering team. You write less code, and it's better code. Three commands get you going.</p>
+<div class="start">
+<div class="step"><div class="n">1 · INSTALL</div><div class="cmd"><span>/add-plugin pstack</span><button class="cp">copy</button></div><p>Run it in a Cursor chat.</p></div>
+<div class="step"><div class="n">2 · PICK MODELS</div><div class="cmd"><span>/setup-pstack</span><button class="cp">copy</button></div><p>Choose a reasoning budget and a model per role. It writes <code>~/.cursor/rules/pstack-models.mdc</code>. Start a new chat after.</p></div>
+<div class="step"><div class="n">3 · GIVE IT A GOAL</div><div class="cmd"><span>/poteto-mode the export writes duplicate rows when a retry lands mid-run. repro first, then fix and verify.</span><button class="cp">copy</button></div><p>Say the goal and a check that can pass or fail. It picks the playbook.</p></div>
+</div>
+<p class="note">Stuck? Type <code>/poteto-help</code> with your question. It answers and hands you a prompt to send, but doesn't start the work. To keep <code>/poteto-mode</code> on every turn, pick it from the <code>/</code> menu with Option+Enter (Mac) or Alt+Enter (Windows).</p>
+<p class="note">When setup offers <code>/create-verification-skill</code>, say yes. An agent that can check its own work keeps going until the check passes. The guide calls it the part that pays off most.</p>
+</section>
+
+<section id="prompts">
+<h2>Write the prompt</h2>
+<p class="lead">You don't name playbooks or list skills. You say what you want and how you'll know it's done.</p>
+<ul class="tight">
+<li><b>The goal.</b> What's wrong, or what you want.</li>
+<li><b>The done check.</b> It must be able to pass or fail. "Make it better" isn't one.</li>
+<li><b>The proof you want.</b> Real command output, a video, the stored value, a before-and-after number.</li>
+<li><b>What you already know.</b> A symptom, a repro step, a log line.</li>
+<li><b>Real constraints.</b> "repro first", "don't change any code yet", "zero behavior change".</li>
+</ul>
+<pre><code>/poteto-mode the csv export drops its last row since yesterday's deploy. failing job id is 4812. repro first, then fix. done means the 60k-row fixture exports every row. show me the row counts before and after.</code></pre>
+<p>Leave out the how, and hold your theory of the cause until the agent has restated the problem. Change subjects with "new task". Steer a drifting run with a principle name.</p>
+<pre><code>apply prove it works. show me the real output, not the build log.</code></pre>
+<p class="note">pstack spends extra tokens on subagents and review panels. To spend less, pick a smaller budget in <code>/setup-pstack</code>, set a role to <code>auto</code>, shorten a panel list, or skip <code>/poteto-mode</code> for small obvious edits.</p>
+</section>
+
+<section id="catalog">
+<h2>Catalog</h2>
+<p class="lead">__NSKILL__ skills, __NPB__ playbooks <code>/poteto-mode</code> picks from, and __NPR__ principles it applies. Open any card for the full source text.</p>
+<div class="ctl"><input id="q" type="search" placeholder="Search, e.g. review, perf, test, parallel" aria-label="Search the catalog"><span id="count"></span></div>
+<div class="ctl" id="kinds"></div>
+<div id="groups"></div>
+<div id="cards"></div>
+</section>
+
+<section id="examples">
+<h2>Example prompts</h2>
+<p class="lead">From the pstack README, verbatim. Swap in your own paths and finish conditions.</p>
+<div class="ex" id="exlist"></div>
+<h3>Pitfalls</h3>
+<ul class="tight">
+<li><b>Listing skills in the prompt.</b> The playbook already sequences them. Name a skill only to override a choice.</li>
+<li><b>A vague finish condition.</b> <code>/loop</code> needs a command or artifact that can pass or fail.</li>
+<li><b>Parallel agents in one worktree.</b> Use cloud agents, or ask for its own worktree per attempt.</li>
+<li><b>Looping before you trust the loop.</b> Get the verification skill working first.</li>
+<li><b>Success off a green build.</b> A build proves it compiles. Ask for the real flow, value, or profile.</li>
+<li><b>Treating <code>auto</code> as a model slug.</b> It means the role runs on the parent chat model.</li>
+</ul>
+</section>
+
+<section id="quiz" class="quiz">
+<h2>Check yourself</h2>
+<p>Score <b id="score">0</b> of <span id="total"></span></p>
+<div id="qz"></div>
+</section>
+</main>
+<footer>Built from pstack v__VER__ (README, docs/guide, and every SKILL.md and playbook). pstack is by Lauren Tan, MIT licensed. Source at <a href="https://github.com/cursor/plugins/tree/main/pstack">github.com/cursor/plugins</a>.</footer>
+<script>
+const D=__DATA__;
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const R=document.documentElement,saved=localStorage.getItem('theme');if(saved)R.dataset.theme=saved;
+$('#theme').onclick=()=>{const dark=R.dataset.theme?R.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;R.dataset.theme=dark?'light':'dark';localStorage.setItem('theme',R.dataset.theme)};
+document.addEventListener('click',e=>{if(e.target.classList.contains('cp')){const t=e.target.previousElementSibling.textContent;navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{e.target.textContent='copied';setTimeout(()=>e.target.textContent='copy',1200)})}});
+const KINDS=[['all','All'],['skill','Skills'],['playbook','Playbooks'],['principle','Principles']];
+const GORDER=['Start here','Understand','Design','Build & clean','Verify','Make it yours','Core','Architecture','Verification','Delegation','Meta','Playbook'];
+const PIN=['poteto-mode','setup-pstack','poteto-help'];
+const KR={skill:0,playbook:1,principle:2};
+D.items.sort((a,b)=>KR[a.kind]-KR[b.kind]||GORDER.indexOf(a.group)-GORDER.indexOf(b.group)||((PIN.indexOf(a.id)+1||99)-(PIN.indexOf(b.id)+1||99))||a.title.localeCompare(b.title));
+let kind='all',group=null;const open=new Set();
+function chips(){
+ $('#kinds').innerHTML=KINDS.map(([k,l])=>`<button class="chip${k===kind?' on':''}" data-k="${k}">${l} (${k==='all'?D.items.length:D.items.filter(i=>i.kind===k).length})</button>`).join('');
+ const gs=kind==='skill'||kind==='principle'?[...new Set(D.items.filter(i=>i.kind===kind).map(i=>i.group))]:[];
+ $('#groups').innerHTML=gs.map(g=>`<button class="chip${g===group?' on':''}" data-g="${esc(g)}">${esc(g)}</button>`).join('');
+}
+$('#kinds').onclick=e=>{const k=e.target.dataset.k;if(k){kind=k;group=null;render()}};
+$('#groups').onclick=e=>{const g=e.target.dataset.g;if(g){group=group===g?null:g;render()}};
+$('#q').oninput=render;
+function card(i){
+ const kl={skill:'Skill',playbook:'Playbook',principle:'Principle'}[i.kind];
+ const meta=i.kind==='playbook'?kl:`${kl} · ${i.group}`;
+ const o=open.has(i.id);
+ return `<article class="card${o?' open':''}" id="${i.id}"><div class="meta">${esc(meta)}</div><h3 class="${i.kind==='skill'?'':'pl'}">${esc(i.title)}</h3><p>${i.summaryH}</p>`+
+ (i.when&&!(o&&i.kind==='playbook')?(i.kind==='playbook'?`<p class="when">${i.whenH}</p>`:`<div class="lbl">When to use</div><p class="when">${i.whenH}</p>`):'')+
+ (i.ex.length?`<div class="lbl">Example</div>`+i.ex.map(x=>`<div class="cmd"><span>${esc(x)}</span><button class="cp">copy</button></div>`).join(''):'')+
+ `<button class="more" data-id="${i.id}" aria-expanded="${o}">${o?'Hide full text':'Read the full '+kl.toLowerCase()}</button>`+
+ (o?`<div class="body">${i.body}<p><a href="${esc(i.src)}">Source file</a></p></div>`:'')+`</article>`;
+}
+function list(){const t=$('#q').value.trim().toLowerCase();return D.items.filter(i=>(kind==='all'||i.kind===kind)&&(!group||i.group===group)&&(!t||[i.id,i.title,i.summary,i.when,i.group,...i.ex].join(' ').toLowerCase().includes(t)))}
+function render(){chips();const L=list();$('#cards').innerHTML=L.length?L.map(card).join(''):'<p class="note">Nothing matches. Try another word.</p>';$('#count').textContent=`${L.length} of ${D.items.length}`}
+$('#cards').onclick=e=>{const b=e.target.closest('.more');if(!b)return;const id=b.dataset.id;open.has(id)?open.delete(id):open.add(id);render();document.getElementById(id).scrollIntoView({block:'nearest'})};
+function go(){const id=decodeURIComponent(location.hash.slice(1));const it=D.items.find(i=>i.id===id);if(!it)return;kind='all';group=null;$('#q').value='';open.add(id);render();const el=document.getElementById(id);el.scrollIntoView({behavior:'instant',block:'start'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1500)}
+window.addEventListener('hashchange',go);
+render();go();
+$('#exlist').innerHTML=D.examples.map(([l,p])=>`<div><div class="lab">${esc(l)}</div><div class="cmd"><span>${esc(p)}</span><button class="cp">copy</button></div></div>`).join('');
+const QZ=[
+['What are the two steps to get started?',['Run /setup-pstack, then use /poteto-mode for work that needs rigor','Run /poteto-help, then /swarm','Write a plan, then /arena it'],0,'Setup picks a budget and models. /poteto-mode does the rest.'],
+['Where does /setup-pstack write its config?',['.cursor/skills/verify-<app>/','~/.cursor/rules/pstack-models.mdc','decisions.tsv'],1,'An always-applied rule. A role with no line keeps the default.'],
+['You want one worker per package and one report. Which skill?',['/arena','/swarm','/interrogate'],1,'/swarm splits work into slices. /arena runs several attempts at the same brief and grafts the best parts.'],
+['What does setting a role to auto mean?',['Use the cheapest model','The role runs on the parent chat model','Pick a random model'],1,'auto and inherit-parent are aliases, not model slugs.'],
+['Should you list skills in your prompt?',['Yes, always','No. State the goal and constraints, and the playbook sequences the skills','Only for bug fixes'],1,'A hand-written sequence usually reorders or drops steps.'],
+['The agent says it compiles, so it is done. What do you say?',['apply laziness protocol','apply prove it works','apply experience first'],1,'Verify against the real artifact, not a proxy.'],
+['Your project has no scripted way to prove app behavior. What do you run?',['/create-verification-skill','/bro','/recall'],0,'It writes .cursor/skills/verify-<app>/ and proves it works once.'],
+];
+$('#total').textContent=QZ.length;let sc=0;
+$('#qz').innerHTML=QZ.map((q,n)=>`<div class="qq" data-n="${n}"><b>${n+1}. ${esc(q[0])}</b>${q[1].map((o,j)=>`<label><input type="radio" name="q${n}" value="${j}"> ${esc(o)}</label>`).join('')}<div class="why">${esc(q[3])}</div></div>`).join('');
+$('#qz').onchange=e=>{const d=e.target.closest('.qq'),q=QZ[d.dataset.n],j=+e.target.value;if(d.classList.contains('done'))return;d.classList.add('done');d.querySelectorAll('label').forEach((l,k)=>{if(k===q[2])l.classList.add('ok');else if(k===j)l.classList.add('no');l.querySelector('input').disabled=true});if(j===q[2])$('#score').textContent=++sc};
+</script>
+</body>
+</html>
